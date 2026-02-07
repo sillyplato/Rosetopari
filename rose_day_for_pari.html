@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Pari 🌹</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600&family=Spectral:wght@300;400;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --rose-primary: #d4506f;
+            --rose-soft: #f4c7d3;
+            --rose-deep: #8b2f4b;
+            --cream: #fef9f3;
+            --charcoal: #2b2b2b;
+            --gold: #d4af37;
+        }
+
+        body {
+            font-family: 'Crimson Pro', serif;
+            background: linear-gradient(135deg, var(--cream) 0%, #fff5f8 100%);
+            color: var(--charcoal);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .page {
+            display: none;
+            min-height: 100vh;
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+            position: relative;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        @keyframes petalFall {
+            0% { 
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            100% { 
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .rose-petal {
+            position: fixed;
+            width: 15px;
+            height: 20px;
+            background: radial-gradient(ellipse at center, var(--rose-primary) 0%, var(--rose-soft) 100%);
+            border-radius: 50% 50% 50% 0;
+            pointer-events: none;
+            z-index: 1000;
+            animation: petalFall linear infinite;
+        }
+
+        /* Page 1 - Lyrics Unlock */
+        #page1 {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #2b2b2b 0%, #4a2b3d 100%);
+        }
+
+        .unlock-container {
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+        }
+
+        .rose-icon {
+            font-size: 5rem;
+            animation: float 3s ease-in-out infinite;
+            margin-bottom: 2rem;
+            filter: drop-shadow(0 10px 30px rgba(212, 80, 111, 0.3));
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: var(--rose-soft);
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-family: 'Spectral', serif;
+            font-size: 1.3rem;
+            color: var(--rose-soft);
+            opacity: 0.8;
+            margin-bottom: 3rem;
+            font-style: italic;
+        }
+
+        .lyrics-hint {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--rose-primary);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .lyrics-hint p {
+            color: var(--rose-soft);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .hint-text {
+            color: var(--gold);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        .unlock-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.1rem;
+            border: 2px solid var(--rose-primary);
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--charcoal);
+            outline: none;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .unlock-input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .unlock-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--rose-primary) 0%, var(--rose-deep) 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        .unlock-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(212, 80, 111, 0.4);
+        }
+
+        .error-msg {
+            color: var(--rose-soft);
+            margin-top: 1rem;
+            font-style: italic;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .error-msg.show {
+            opacity: 1;
+        }
+
+        /* Page 2 - Welcome */
+        #page2 {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            background: linear-gradient(to bottom, var(--cream), #fff5f8);
+        }
+
+        .welcome-content {
+            max-width: 700px;
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(212, 80, 111, 0.15);
+        }
+
+        .welcome-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--rose-deep);
+            margin-bottom: 1.5rem;
+        }
+
+        .welcome-content p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: var(--charcoal);
+            margin-bottom: 2rem;
+        }
+
+        .days-counter {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--rose-soft), var(--rose-primary));
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-family: 'Spectral', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 2rem 0;
+            box-shadow: 0 5px 20px rgba(212, 80, 111, 0.3);
+        }
+
+        .next-btn {
+            padding: 1rem 3rem;
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.1rem;
+            background: var(--rose-primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+        }
+
+        .next-btn:hover {
+            background: var(--rose-deep);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(212, 80, 111, 0.4);
+        }
+
+        /* Page 3-6 - Memory Pages */
+        .memory-page {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .memory-card {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        .photo-frame {
+            position: relative;
+            background: linear-gradient(135deg, var(--rose-soft), var(--rose-primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            overflow: hidden;
+        }
+
+        .photo-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+            color: white;
+            font-family: 'Spectral', serif;
+        }
+
+        .photo-placeholder .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .photo-placeholder .label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-style: italic;
+        }
+
+        .memory-text {
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .memory-text h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--rose-deep);
+            margin-bottom: 1.5rem;
+        }
+
+        .memory-text p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--charcoal);
+            margin-bottom: 1rem;
+        }
+
+        .signature {
+            font-family: 'Spectral', serif;
+            font-style: italic;
+            color: var(--rose-primary);
+            margin-top: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            padding: 0.8rem 2rem;
+            font-family: 'Crimson Pro', serif;
+            font-size: 1rem;
+            background: white;
+            color: var(--rose-primary);
+            border: 2px solid var(--rose-primary);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--rose-primary);
+            color: white;
+        }
+
+        .nav-btn.primary {
+            background: var(--rose-primary);
+            color: white;
+        }
+
+        .nav-btn.primary:hover {
+            background: var(--rose-deep);
+            border-color: var(--rose-deep);
+        }
+
+        /* Final Page */
+        #page7 {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--rose-deep) 0%, #2b2b2b 100%);
+            text-align: center;
+        }
+
+        .final-message {
+            max-width: 600px;
+            color: white;
+        }
+
+        .final-message h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            color: var(--rose-soft);
+        }
+
+        .final-message p {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            color: var(--cream);
+        }
+
+        .rose-animation {
+            font-size: 6rem;
+            animation: float 3s ease-in-out infinite;
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .memory-card {
+                grid-template-columns: 1fr;
+            }
+
+            .photo-frame {
+                min-height: 300px;
+            }
+
+            .memory-text {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Falling Rose Petals -->
+    <div id="petals-container"></div>
+
+    <!-- Page 1: Lyrics Unlock -->
+    <div id="page1" class="page active">
+        <div class="unlock-container">
+            <div class="rose-icon">🌹</div>
+            <h1>Happy Rose Day, Pari</h1>
+            <p class="subtitle">Unlock this with our song...</p>
+            
+            <div class="lyrics-hint">
+                <p>"I've been looking for _______ in a million places"</p>
+                <p class="hint-text">(Hint: It's from CO2 by Prateek Kuhad)</p>
+            </div>
+
+            <input 
+                type="text" 
+                id="lyricsInput" 
+                class="unlock-input" 
+                placeholder="Complete the lyrics..."
+                autocomplete="off"
+            >
+            <button class="unlock-btn" onclick="checkLyrics()">Unlock 💕</button>
+            <p id="errorMsg" class="error-msg">Hmm, not quite! Try again 🌹</p>
+        </div>
+    </div>
+
+    <!-- Page 2: Welcome -->
+    <div id="page2" class="page">
+        <div class="welcome-content">
+            <h2>You found it! 🌹</h2>
+            <p>Hey Pari,</p>
+            <p>It's Rose Day, and I wanted to do something special for you. So here's a little something I put together...</p>
+            
+            <div class="days-counter">60 Days Together ✨</div>
+            
+            <p>These past two months have been really great, cutie. Wanted to share some moments and things I'm looking forward to with you.</p>
+            
+            <button class="next-btn" onclick="nextPage()">Let's go →</button>
+        </div>
+    </div>
+
+    <!-- Page 3: Supporting Each Other -->
+    <div id="page3" class="page memory-page">
+        <div class="memory-card">
+            <div class="photo-frame" style="background: linear-gradient(135deg, #ffd6e0, var(--rose-primary));">
+                <div class="photo-placeholder">
+                    <div class="icon">🤝</div>
+                    <p class="label">Lift to each other's drift</p>
+                </div>
+            </div>
+            <div class="memory-text">
+                <h3>Supporting Each Other</h3>
+                <p>I really like how we're there for each other, cutie. Whether it's the small things or the bigger stuff, knowing I can count on you makes things feel easier.</p>
+                <p>And I hope you feel the same way about me being there for you too, gang.</p>
+                <p class="signature">— Chinmay</p>
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="prevPage()">← Back</button>
+                    <button class="nav-btn primary" onclick="nextPage()">Next →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 4: Adventures Together -->
+    <div id="page4" class="page memory-page">
+        <div class="memory-card">
+            <div class="photo-frame" style="background: linear-gradient(135deg, #ffc4d0, #ff8fa3);">
+                <div class="photo-placeholder">
+                    <div class="icon">🗺️</div>
+                    <p class="label">Adventures together</p>
+                </div>
+            </div>
+            <div class="memory-text">
+                <h3>Our Little Adventures</h3>
+                <p>Every time we go out or try something new together, it turns into a good memory, Pari. Even the simple things feel more fun when we're doing them together.</p>
+                <p>Looking forward to more of these moments with you, gang.</p>
+                <p class="signature">— Chinmay</p>
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="prevPage()">← Back</button>
+                    <button class="nav-btn primary" onclick="nextPage()">Next →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 5: Running Together -->
+    <div id="page5" class="page memory-page">
+        <div class="memory-card">
+            <div class="photo-frame" style="background: linear-gradient(135deg, #ffb3c1, var(--rose-deep));">
+                <div class="photo-placeholder">
+                    <div class="icon">🏃</div>
+                    <p class="label">Run?</p>
+                </div>
+            </div>
+            <div class="memory-text">
+                <h3>Running Together</h3>
+                <p>Early morning runs with you, Pari. Evening jogs where we just talk about everything and nothing. Or just those walks where we lose track of time.</p>
+                <p>This is definitely becoming our thing, cutie.</p>
+                <p class="signature">— Chinmay</p>
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="prevPage()">← Back</button>
+                    <button class="nav-btn primary" onclick="nextPage()">Next →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 6: Reading -->
+    <div id="page6" class="page memory-page">
+        <div class="memory-card">
+            <div class="photo-frame" style="background: linear-gradient(135deg, #ffa6c1, #d4506f);">
+                <div class="photo-placeholder">
+                    <div class="icon">📚</div>
+                    <p class="label">Read</p>
+                </div>
+            </div>
+            <div class="memory-text">
+                <h3>Our Reading Dates</h3>
+                <p>Sitting together with our books, Pari. Sharing what we're reading, talking about stories, recommending stuff to each other.</p>
+                <p>Can't wait for more of these quiet moments with you, gang.</p>
+                <p class="signature">— Chinmay</p>
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="prevPage()">← Back</button>
+                    <button class="nav-btn primary" onclick="nextPage()">Next →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 7: Final Message -->
+    <div id="page7" class="page">
+        <div class="final-message">
+            <div class="rose-animation">🌹</div>
+            <h2>Happy Rose Day</h2>
+            <p>These 60 days have been really good, Pari. Thanks for being you and for all the moments we've shared, cutie.</p>
+            <p>Here's to many more adventures, runs, books, and everything in between, gang.</p>
+            <p style="font-size: 1.5rem; margin-top: 3rem;">💕</p>
+            <p style="font-family: 'Spectral', serif; font-style: italic; margin-top: 1rem;">— Chinmay</p>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const totalPages = 7;
+
+        // Create falling rose petals
+        function createPetals() {
+            const container = document.getElementById('petals-container');
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const petal = document.createElement('div');
+                    petal.className = 'rose-petal';
+                    petal.style.left = Math.random() * 100 + '%';
+                    petal.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                    petal.style.animationDelay = Math.random() * 2 + 's';
+                    container.appendChild(petal);
+
+                    setTimeout(() => petal.remove(), 8000);
+                }, i * 300);
+            }
+        }
+
+        // Start petals animation
+        setInterval(createPetals, 3000);
+        createPetals();
+
+        // Check lyrics
+        function checkLyrics() {
+            const input = document.getElementById('lyricsInput').value.toLowerCase().trim();
+            const errorMsg = document.getElementById('errorMsg');
+            
+            // Accepting "you" or "someone" as both could work
+            if (input === 'you' || input === 'someone') {
+                showPage(2);
+            } else {
+                errorMsg.classList.add('show');
+                setTimeout(() => {
+                    errorMsg.classList.remove('show');
+                }, 2000);
+            }
+        }
+
+        // Allow Enter key to submit
+        document.getElementById('lyricsInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkLyrics();
+            }
+        });
+
+        function showPage(pageNum) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById('page' + pageNum).classList.add('active');
+            currentPage = pageNum;
+            window.scrollTo(0, 0);
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages) {
+                showPage(currentPage + 1);
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 2) {
+                showPage(currentPage - 1);
+            }
+        }
+    </script>
+</body>
+</html>
